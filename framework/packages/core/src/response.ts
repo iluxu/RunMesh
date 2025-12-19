@@ -26,12 +26,12 @@ export function parseStructuredOutput<T>(
   const text = extractContent(response);
   const { schema, maxRetries = 1 } = options;
 
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const parsed = schema.parse(JSON.parse(text));
       return { value: parsed, raw: text, retries: attempt };
     } catch (error) {
-      if (attempt === maxRetries) {
+      if (attempt === maxRetries - 1) {
         throw new ValidationError("Unable to parse structured output", error);
       }
     }
@@ -41,7 +41,8 @@ export function parseStructuredOutput<T>(
 }
 
 export function buildJsonSchema<T>(schema: ZodSchema<T>): Record<string, unknown> {
-  return zodToJsonSchema(schema, "StructuredOutput") as Record<string, unknown>;
+  const raw = zodToJsonSchema(schema, "StructuredOutput") as Record<string, unknown>;
+  return normalizeJsonSchema(raw);
 }
 
 export async function generateStructuredOutput<T>(
@@ -51,7 +52,7 @@ export async function generateStructuredOutput<T>(
   let retries = 0;
   let messages = request.messages;
 
-  while (retries <= maxRetries) {
+  while (retries < maxRetries) {
     const response = await client.respond({
       ...request,
       messages,
@@ -65,11 +66,11 @@ export async function generateStructuredOutput<T>(
     });
 
     try {
-      const parsed = parseStructuredOutput(response, { schema, maxRetries: 0 });
+      const parsed = parseStructuredOutput(response, { schema, maxRetries: 1 });
       return parsed;
     } catch (error) {
       retries += 1;
-      if (retries > maxRetries) {
+      if (retries >= maxRetries) {
         throw error;
       }
       const content = [
@@ -96,7 +97,11 @@ function extractContent(response: ChatResponse): string {
     return (firstMessage as unknown[])
       .map((part: unknown) => {
         if (typeof part === "string") return part;
-        if (typeof part === "object" && part !== null && "text" in (part as Record<string, unknown>)) {
+        if (
+          typeof part === "object" &&
+          part !== null &&
+          "text" in (part as Record<string, unknown>)
+        ) {
           return (part as { text?: string }).text ?? "";
         }
         return "";
@@ -105,4 +110,27 @@ function extractContent(response: ChatResponse): string {
   }
 
   throw new ValidationError("Response did not include text content");
+}
+
+function normalizeJsonSchema(schema: Record<string, unknown>): Record<string, unknown> {
+  const ref = schema.$ref;
+  const defs = schema.definitions;
+
+  if (typeof ref === "string" && defs && typeof defs === "object") {
+    const match = ref.match(/^#\/definitions\/(.+)$/);
+    const name = match?.[1];
+    if (name && (defs as Record<string, unknown>)[name]) {
+      const resolved = (defs as Record<string, unknown>)[name] as Record<string, unknown>;
+      return ensureObjectType(resolved);
+    }
+  }
+
+  return ensureObjectType(schema);
+}
+
+function ensureObjectType(schema: Record<string, unknown>): Record<string, unknown> {
+  if (!("type" in schema) && "properties" in schema) {
+    return { ...schema, type: "object" };
+  }
+  return schema;
 }

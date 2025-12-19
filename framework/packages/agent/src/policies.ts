@@ -9,7 +9,10 @@ export type PolicyResult = { allow: boolean; reason?: string };
 
 export type Policy = (context: PolicyContext) => PolicyResult | Promise<PolicyResult>;
 
-export async function enforcePolicies(policies: Policy[] | undefined, context: PolicyContext): Promise<void> {
+export async function enforcePolicies(
+  policies: Policy[] | undefined,
+  context: PolicyContext
+): Promise<void> {
   if (!policies?.length) return;
 
   for (const policy of policies) {

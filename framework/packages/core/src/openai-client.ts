@@ -8,6 +8,7 @@ import {
 } from "openai/resources/chat/completions";
 import { ResponseStream, StreamChunk } from "./stream.js";
 import { OpenAIRequestError } from "./errors.js";
+import { ProviderConfig } from "./providers.js";
 
 export type CreateOpenAIConfig = {
   apiKey?: string;
@@ -15,7 +16,20 @@ export type CreateOpenAIConfig = {
   baseURL?: string;
   timeout?: number;
   retries?: number;
+  headers?: Record<string, string>;
 };
+
+/**
+ * Create client from provider config
+ */
+export function createFromProvider(provider: ProviderConfig): RunMeshOpenAI {
+  return createOpenAI({
+    apiKey: provider.apiKey,
+    defaultModel: provider.defaultModel || "gpt-4o",
+    baseURL: provider.baseUrl,
+    headers: provider.headers
+  });
+}
 
 export type ChatMessage = ChatCompletionMessageParam;
 
@@ -77,10 +91,17 @@ export function createOpenAI(config: CreateOpenAIConfig): RunMeshOpenAI {
 }
 
 function buildClientOptions(config: CreateOpenAIConfig): ClientOptions {
-  return {
+  const options: ClientOptions = {
     apiKey: config.apiKey || process.env.OPENAI_API_KEY,
-    baseURL: config.baseURL,
+    baseURL: config.baseURL ?? process.env.OPENAI_BASE_URL,
     timeout: config.timeout ?? DEFAULT_TIMEOUT,
     maxRetries: config.retries ?? 0
   };
+
+  // Add custom headers if provided (for OpenRouter, etc.)
+  if (config.headers) {
+    options.defaultHeaders = config.headers;
+  }
+
+  return options;
 }

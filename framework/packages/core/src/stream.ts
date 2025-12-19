@@ -28,7 +28,11 @@ export class ResponseStream implements AsyncIterable<StreamEvent> {
         const text = (contentDelta as unknown[])
           .map((part: unknown) => {
             if (typeof part === "string") return part;
-            if (typeof part === "object" && part !== null && "text" in (part as Record<string, unknown>)) {
+            if (
+              typeof part === "object" &&
+              part !== null &&
+              "text" in (part as Record<string, unknown>)
+            ) {
               return (part as { text?: string }).text ?? "";
             }
             return "";

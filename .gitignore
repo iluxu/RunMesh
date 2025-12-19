@@ -78,3 +78,30 @@ runmesh-code.txt
 # GitHub
 # =========================
 .github/workflows/*.log
+
+# =========================
+# Project-specific data files
+# =========================
+*.csv
+*.csv:Zone.Identifier
+*.json:Zone.Identifier
+*.py:Zone.Identifier
+*.txt:Zone.Identifier
+infos_brutes.txt
+donnees_jour.csv
+predictions_*.csv
+tuning_state.json
+world_model.json
+mimi8.py
+mimi8.runmesh.ts
+
+# =========================
+# Claude Code
+# =========================
+.claude/
+
+# =========================
+# Test files
+# =========================
+test-*.js
+test-*.ts

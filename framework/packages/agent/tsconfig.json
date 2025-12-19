@@ -2,12 +2,9 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
+    "rootDir": "./src",
     "outDir": "dist"
   },
   "include": ["src"],
-  "references": [
-    { "path": "../core" },
-    { "path": "../memory" },
-    { "path": "../tools" }
-  ]
+  "references": [{ "path": "../core" }, { "path": "../memory" }, { "path": "../tools" }]
 }

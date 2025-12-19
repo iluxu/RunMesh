@@ -1,0 +1,18 @@
+{
+  "name": "runmesh-example-simple-chatbot",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx tsx index.ts",
+    "dev": "npx tsx watch index.ts"
+  },
+  "dependencies": {
+    "@runmesh/agent": "workspace:*",
+    "@runmesh/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0"
+  }
+}

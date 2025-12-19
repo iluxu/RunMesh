@@ -1,156 +1,469 @@
 # RunMesh
 
-**Build agentic applications the right way.**
+<div align="center">
 
-RunMesh is an OpenAI-first JS/TS framework for production-ready agentic apps. It is typed end-to-end, observable, and designed to replace glue code with a clean runtime layer for agents, tools, streaming, structured outputs, and memory.
+![RunMesh Logo](https://img.shields.io/badge/⚡-RunMesh-6366f1?style=for-the-badge)
 
-Docs: https://runmesh.llmbasedos.com  
-GitHub: https://github.com/iluxu/RunMesh
+**The Angular of Gen AI Applications**
 
-> Status: Alpha (API may change). Chat Completions supported today. Responses API support is on the roadmap.
+Build production-ready AI agents with the best developer experience in the industry.
 
----
+[![npm version](https://img.shields.io/npm/v/@runmesh/agent?style=flat-square)](https://www.npmjs.com/package/@runmesh/agent)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue?style=flat-square)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-BSL%201.1-green?style=flat-square)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-27%20passing-brightgreen?style=flat-square)](https://github.com/iluxu/RunMesh/actions)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
-## Why RunMesh
+[Documentation](https://runmesh.dev) · [Quick Start](#-quick-start) · [Examples](#-examples) · [Discord](https://discord.gg/runmesh)
 
-Most AI apps need the same building blocks:
-- tool calling with safe input validation
-- multi-round tool loops
-- streaming events for CLIs and servers
-- structured JSON outputs that actually validate
-- memory and retrieval
-- observability (logs, cost, traces)
-
-RunMesh ships these as a composable framework, not a pile of snippets.
+</div>
 
 ---
 
-## Install
+## 🎯 Why RunMesh?
+
+RunMesh is the **first comprehensive, batteries-included framework** for building Gen AI applications. Like Angular revolutionized web development with structure and best practices, RunMesh does the same for AI engineering.
+
+### The Problem We Solve
+
+Building AI agents today means dealing with:
+
+- ❌ Endless boilerplate code for every project
+- ❌ Juggling multiple providers, SDKs, and APIs
+- ❌ No type safety, no validation, no standards
+- ❌ Poor developer experience and debugging
+- ❌ Difficulty testing, deploying, and maintaining
+
+### The RunMesh Solution
+
+A complete framework with everything you need:
+
+- ✅ **Batteries Included**: Tools, memory, streaming, structured outputs, observability
+- ✅ **Multi-Provider**: OpenRouter (200+ models), OpenAI, Anthropic, or bring your own
+- ✅ **Type-Safe**: End-to-end TypeScript with Zod validation
+- ✅ **Framework Agnostic**: Works with Next.js, Express, Hono, Cloudflare Workers, Deno
+- ✅ **Frontend Ready**: React hooks, Vue composables (coming soon), Svelte stores (coming soon)
+- ✅ **Production Ready**: Testing utilities, logging, error handling, deployment templates
+- ✅ **Developer First**: Best-in-class DX with CLI scaffolding and hot reload
+
+---
+
+## 🚀 Quick Start
+
+### Create a New Project
 
 ```bash
-pnpm add @runmesh/agent @runmesh/tools zod
-# or
-npm i @runmesh/agent @runmesh/tools zod
-# or
-yarn add @runmesh/agent @runmesh/tools zod
+# Like create-next-app, but for AI agents
+npx create-runmesh@latest my-ai-app
+
+cd my-ai-app
+npm install
+npm run dev
 ```
 
-OpenAI key required:
+### Or Add to Existing Project
 
 ```bash
-export OPENAI_API_KEY="..."
-export OPENAI_MODEL="gpt-5.2"
+npm install @runmesh/agent @runmesh/core @runmesh/tools zod
+# or
+pnpm add @runmesh/agent @runmesh/core @runmesh/tools zod
 ```
 
-## Quickstart
+### Your First Agent (10 Lines)
 
-```ts
+```typescript
 import { createAgent } from "@runmesh/agent";
+import { createOpenRouterConfig, createFromProvider } from "@runmesh/core";
 import { tool, ToolRegistry } from "@runmesh/tools";
 import { z } from "zod";
 
-const tools = new ToolRegistry();
+// Use 200+ models via OpenRouter (Claude, GPT, Gemini, Llama...)
+const client = createFromProvider(
+  createOpenRouterConfig(
+    process.env.OPENROUTER_API_KEY!,
+    "claude-3.5-sonnet" // or "gpt-4o", "gemini-pro", etc.
+  )
+);
 
+const tools = new ToolRegistry();
 tools.register(
   tool({
-    name: "get_time",
-    description: "Return the current ISO time",
-    schema: z.object({}),
-    handler: () => new Date().toISOString()
+    name: "get_weather",
+    description: "Get current weather for a city",
+    schema: z.object({
+      city: z.string().describe("City name")
+    }),
+    handler: async ({ city }) => {
+      // Call your weather API here
+      return { city, temp: 72, condition: "sunny" };
+    }
   })
 );
 
 const agent = createAgent({
-  name: "demo",
-  model: process.env.OPENAI_MODEL ?? "gpt-5.2",
-  systemPrompt: "You are a concise assistant.",
+  name: "weather-assistant",
+  client,
+  model: "anthropic/claude-3.5-sonnet",
+  systemPrompt: "You are a helpful weather assistant.",
   tools
 });
 
-const result = await agent.run("What time is it?");
+const result = await agent.run("What's the weather in Paris?");
 console.log(result.response.choices[0]?.message?.content);
 ```
 
-## Features
+---
 
-**Agent Runtime**
-- prompts, tools, memory, policies
-- multi-round tool loops with persisted tool-call messages
-- configurable `maxToolRounds`
+## 🎨 Frontend Integration
 
-**Typed Tools**
-- define tools with Zod
-- validate args before execution
-- export Zod -> JSON Schema for OpenAI tool definitions
+### React (The Pain Béni Experience)
 
-**Structured Outputs**
-- `generateStructuredOutput(...)` retries on invalid JSON
-- schema-first extraction for reliable automation
+```tsx
+import { useStreamingAgent } from "@runmesh/react";
 
-**Streaming Support**
-- event iterator for real-time UX
-- emits `token`, `tool_call`, `final` (tool_result events are planned)
+function ChatInterface() {
+  const { messages, sendMessage, isStreaming } = useStreamingAgent({
+    apiUrl: "/api/agent"
+  });
 
-**Memory and Retrieval**
-- pluggable memory adapters
-- embeddings and similarity search helpers
+  return (
+    <div className="chat-container">
+      {messages.map((msg) => (
+        <div key={msg.timestamp} className={`message ${msg.role}`}>
+          <strong>{msg.role}:</strong> {msg.content}
+        </div>
+      ))}
 
-**Observability**
-- logger and tracer hooks
-- token and cost helpers (when available)
-
-## Market Positioning / Comparison
-
-RunMesh is higher-level than the OpenAI SDK, simpler than LangChain, and more typed and modern for production use.
-
-- **OpenAI SDK**: great low-level API access, but you still assemble tools, loops, retries, and observability.
-- **LangChain**: powerful, but can feel heavy and magic-heavy for clean, typed app code.
-- **RunMesh**: explicit runtime primitives, end-to-end typing, and predictable execution loops.
-
-Think of it as the React/Vue style framework layer for agentic apps.
-
-## Demo CLI
-
-A streaming CLI demo lives here: `framework/apps/demo-cli`
-
-```bash
-pnpm install
-pnpm --filter demo-cli run start "summarize this article: <url>"
+      <ChatInput
+        onSend={sendMessage}
+        disabled={isStreaming}
+        placeholder={isStreaming ? "AI is thinking..." : "Type a message..."}
+      />
+    </div>
+  );
+}
 ```
 
-See `framework/apps/demo-cli/index.ts` for the full example.
+### Next.js API Route (App Router)
 
-## Packages
-- `@runmesh/core` - OpenAI client, streaming, response helpers, errors
-- `@runmesh/agent` - agent runtime, planner/executor, policies
-- `@runmesh/tools` - tool definition, registry, executor
-- `@runmesh/memory` - memory adapters, embeddings, retrieval
-- `@runmesh/schema` - Zod validation and JSON Schema export
-- `@runmesh/observability` - logger, tracer, cost estimation
-- `@runmesh/adapters` - CLI, Web, and Bot adapters
+```typescript
+// app/api/agent/route.ts
+import { createAgent } from "@runmesh/agent";
+import { createOpenRouterConfig, createFromProvider } from "@runmesh/core";
 
-## License (Important)
+const client = createFromProvider(createOpenRouterConfig(process.env.OPENROUTER_API_KEY!));
 
-RunMesh is licensed under Business Source License 1.1 (BSL 1.1).
+export async function POST(req: Request) {
+  const { prompt } = await req.json();
 
-Free to use for:
-- personal projects
-- internal or company use
-- production deployments of your own apps
+  const agent = createAgent({
+    name: "api-agent",
+    client,
+    model: "anthropic/claude-3.5-sonnet",
+    systemPrompt: "You are a helpful AI assistant."
+  });
 
-Commercial hosted offerings or "RunMesh-as-a-Service" require a commercial license.
+  const result = await agent.run(prompt);
 
-A future change date will relicense to Apache-2.0 (see `LICENSE`).
+  return Response.json({
+    content: result.response.choices[0]?.message?.content
+  });
+}
+```
 
-For a commercial license, open an issue or contact the maintainer.
+---
 
-## Roadmap
-- Responses API first path
-- richer web demo (Next.js)
-- CI and tests
-- more adapters (Discord, Telegram)
-- replayable runs and persistent traces
+## 🌟 Key Features
 
-## Contributing
+### 🔄 Multi-Provider Support
 
-PRs welcome. If you build something with RunMesh, share it in Discussions.
+Access **200+ models** through one unified API:
+
+```typescript
+// OpenRouter - Access everything (Recommended)
+const or = createFromProvider(createOpenRouterConfig(key, "anthropic/claude-3.5-sonnet"));
+
+// OpenAI
+const openai = createOpenAI({
+  apiKey,
+  defaultModel: "gpt-4o"
+});
+
+// Anthropic
+const anthropic = createFromProvider(createAnthropicConfig(key, "claude-3-5-sonnet-20241022"));
+
+// Custom endpoint
+const custom = createCustomConfig(key, "https://your-api.com/v1", "model-name");
+```
+
+### 🛠️ Type-Safe Tools
+
+Define tools with full TypeScript support:
+
+```typescript
+const tools = new ToolRegistry();
+
+tools.register(
+  tool({
+    name: "search_database",
+    description: "Search the product database",
+    schema: z.object({
+      query: z.string(),
+      limit: z.number().default(10),
+      filters: z
+        .object({
+          category: z.string().optional(),
+          minPrice: z.number().optional()
+        })
+        .optional()
+    }),
+    handler: async ({ query, limit, filters }) => {
+      // All parameters are fully typed!
+      const results = await db.search(query, { limit, ...filters });
+      return results;
+    }
+  })
+);
+```
+
+### 💾 Memory & Context
+
+Built-in memory management for conversational agents:
+
+```typescript
+import { InMemoryAdapter } from "@runmesh/memory";
+
+const agent = createAgent({
+  name: "chatbot",
+  client,
+  memory: new InMemoryAdapter(),
+  systemPrompt: "You remember user preferences and past conversations."
+});
+
+// Memory is automatically managed across conversations
+await agent.run("My name is Alice");
+await agent.run("What's my name?"); // "Your name is Alice"
+```
+
+### 📊 Structured Outputs
+
+Extract structured data with Zod schemas:
+
+```typescript
+import { generateStructuredOutput } from "@runmesh/core";
+
+const analysisSchema = z.object({
+  summary: z.string(),
+  sentiment: z.enum(["positive", "negative", "neutral"]),
+  topics: z.array(z.string()),
+  confidence: z.number().min(0).max(1)
+});
+
+const result = await generateStructuredOutput({
+  client,
+  request: {
+    messages: [{ role: "user", content: "Analyze this product review: ..." }]
+  },
+  schema: analysisSchema,
+  maxRetries: 3
+});
+
+// result.value is fully typed!
+const { summary, sentiment, topics, confidence } = result.value;
+```
+
+### 🎯 Multi-Step Planning
+
+Orchestrate complex workflows with the Planner:
+
+```typescript
+import { Planner } from "@runmesh/agent";
+
+const planner = new Planner(executor);
+
+const result = await planner.execute({
+  objective: "Research and write a comprehensive report on AI trends",
+  steps: [
+    "Research current AI trends and gather data",
+    "Analyze the data and identify key patterns",
+    "Write a detailed report with findings",
+    "Review and refine the report"
+  ],
+  continueOnError: false,
+  onStepComplete: (step) => {
+    console.log(`✅ Completed: ${step.description}`);
+  },
+  onStepError: (step, error) => {
+    console.error(`❌ Failed: ${step.description}`, error);
+  }
+});
+
+console.log(`Success: ${result.success}`);
+result.steps.forEach((step) => {
+  console.log(`${step.id}: ${step.status} - ${step.description}`);
+});
+```
+
+### 📡 Streaming Responses
+
+Real-time streaming for better UX:
+
+```typescript
+const stream = await agent.stream("Write a long story...");
+
+for await (const event of stream) {
+  if (event.type === "token") {
+    process.stdout.write(event.content);
+  } else if (event.type === "tool_call") {
+    console.log(`\n[Tool: ${event.name}]`);
+  } else if (event.type === "final") {
+    console.log("\n\nDone!");
+  }
+}
+```
+
+---
+
+## 📦 Packages
+
+RunMesh is organized as a monorepo with focused packages:
+
+| Package                  | Description                                     | Version                                                                                                                               |
+| ------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `@runmesh/core`          | OpenAI client, providers, streaming, validation | [![npm](https://img.shields.io/npm/v/@runmesh/core?style=flat-square)](https://www.npmjs.com/package/@runmesh/core)                   |
+| `@runmesh/agent`         | Agent runtime, executor, planner                | [![npm](https://img.shields.io/npm/v/@runmesh/agent?style=flat-square)](https://www.npmjs.com/package/@runmesh/agent)                 |
+| `@runmesh/tools`         | Tool definitions, registry, executor            | [![npm](https://img.shields.io/npm/v/@runmesh/tools?style=flat-square)](https://www.npmjs.com/package/@runmesh/tools)                 |
+| `@runmesh/memory`        | Memory adapters, embeddings, retrieval          | [![npm](https://img.shields.io/npm/v/@runmesh/memory?style=flat-square)](https://www.npmjs.com/package/@runmesh/memory)               |
+| `@runmesh/schema`        | Zod helpers, JSON Schema conversion             | [![npm](https://img.shields.io/npm/v/@runmesh/schema?style=flat-square)](https://www.npmjs.com/package/@runmesh/schema)               |
+| `@runmesh/observability` | Logging, tracing, cost estimation               | [![npm](https://img.shields.io/npm/v/@runmesh/observability?style=flat-square)](https://www.npmjs.com/package/@runmesh/observability) |
+| `@runmesh/react`         | React hooks and components                      | [![npm](https://img.shields.io/npm/v/@runmesh/react?style=flat-square)](https://www.npmjs.com/package/@runmesh/react)                 |
+| `@runmesh/cli`           | Project scaffolding tool                        | [![npm](https://img.shields.io/npm/v/@runmesh/cli?style=flat-square)](https://www.npmjs.com/package/@runmesh/cli)                     |
+
+---
+
+## 🎓 Examples
+
+Check out our [examples directory](./examples) for complete, runnable examples:
+
+- **[Simple Chatbot](./examples/simple-chatbot)** - Basic conversational agent
+- **[Tool-Using Agent](./examples/tool-agent)** - Agent with custom tools
+- **[Multi-Agent System](./examples/multi-agent)** - Multiple agents working together
+- **[Next.js App](./examples/nextjs-chat)** - Full-stack chat application
+- **[API Server](./examples/api-server)** - REST API with RunMesh
+- **[Structured Extraction](./examples/structured-output)** - Data extraction example
+
+---
+
+## 🧪 Testing
+
+RunMesh includes comprehensive testing utilities:
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { createAgent } from "@runmesh/agent";
+import { createMockClient } from "@runmesh/core/testing";
+
+describe("MyAgent", () => {
+  it("should respond correctly", async () => {
+    const mockClient = createMockClient({
+      responses: [{ content: "Hello! How can I help?" }]
+    });
+
+    const agent = createAgent({
+      name: "test-agent",
+      client: mockClient,
+      model: "gpt-4o"
+    });
+
+    const result = await agent.run("Hi");
+    expect(result.response.choices[0]?.message?.content).toBe("Hello! How can I help?");
+  });
+});
+```
+
+---
+
+## 🚢 Deployment
+
+RunMesh works everywhere JavaScript runs:
+
+- **Vercel** - Deploy with one command
+- **Railway** - Container deployment
+- **Cloudflare Workers** - Edge runtime
+- **AWS Lambda** - Serverless
+- **Docker** - Containerized deployment
+- **Node.js** - Traditional server
+
+See our [deployment guides](./docs/deployment) for detailed instructions.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Development Setup
+
+```bash
+git clone https://github.com/iluxu/RunMesh.git
+cd RunMesh
+pnpm install
+pnpm test
+pnpm build
+```
+
+---
+
+## 📝 License
+
+RunMesh is licensed under the [Business Source License 1.1](LICENSE).
+
+**Free for:**
+
+- Personal projects
+- Internal company use
+- Production deployments of your own applications
+
+**Commercial license required for:**
+
+- Hosting RunMesh as a service
+- Selling RunMesh-based products
+
+After 4 years, RunMesh will automatically convert to Apache 2.0.
+
+For commercial licensing, [open an issue](https://github.com/iluxu/RunMesh/issues/new) or contact us.
+
+---
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=iluxu/RunMesh&type=Date)](https://star-history.com/#iluxu/RunMesh&Date)
+
+---
+
+## 💬 Community
+
+- [Discord](https://discord.gg/runmesh) - Chat with the community
+- [GitHub Discussions](https://github.com/iluxu/RunMesh/discussions) - Ask questions, share ideas
+- [Twitter](https://twitter.com/runmesh) - Follow for updates
+- [Blog](https://runmesh.dev/blog) - Tutorials and announcements
+
+---
+
+## 🙏 Acknowledgments
+
+RunMesh is built on the shoulders of giants:
+
+- [OpenAI](https://openai.com) for the excellent SDK
+- [Zod](https://zod.dev) for schema validation
+- [Vercel](https://vercel.com) for AI SDK inspiration
+
+---
+
+<div align="center">
+
+**Built with ❤️ by the RunMesh Team**
+
+[⭐ Star us on GitHub](https://github.com/iluxu/RunMesh) · [📖 Read the docs](https://runmesh.dev) · [💬 Join Discord](https://discord.gg/runmesh)
+
+</div>

@@ -22,11 +22,16 @@ export type ToolCallDefinition = {
   };
 };
 
-export type RegisteredTool<TInput = unknown, TResult = unknown> = ToolDefinition<TInput, TResult> & {
+export type RegisteredTool<TInput = unknown, TResult = unknown> = ToolDefinition<
+  TInput,
+  TResult
+> & {
   toOpenAITool(): ToolCallDefinition;
 };
 
-export function tool<TInput, TResult>(definition: ToolDefinition<TInput, TResult>): RegisteredTool<TInput, TResult> {
+export function tool<TInput, TResult>(
+  definition: ToolDefinition<TInput, TResult>
+): RegisteredTool<TInput, TResult> {
   return {
     ...definition,
     toOpenAITool() {

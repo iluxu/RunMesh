@@ -15,7 +15,7 @@ tools.register(
 
 const agent = createAgent({
   name: "demo-cli-agent",
-  model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+  model: process.env.OPENAI_MODEL ?? "gpt-5.2",
   systemPrompt: "You are a concise French assistant. Use tools when helpful.",
   tools
 });
@@ -29,7 +29,9 @@ async function main() {
     if (event.type === "token") {
       process.stdout.write(event.value);
     } else if (event.type === "tool_call") {
-      console.log(`\n[tool_call] ${event.toolCall.function.name} ${event.toolCall.function.arguments}`);
+      console.log(
+        `\n[tool_call] ${event.toolCall.function.name} ${event.toolCall.function.arguments}`
+      );
     } else if (event.type === "final") {
       console.log("\n\n[final]", event.message.content);
     }

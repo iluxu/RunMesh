@@ -1,0 +1,19 @@
+{
+  "name": "runmesh-example-tool-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx tsx index.ts"
+  },
+  "dependencies": {
+    "@runmesh/agent": "workspace:*",
+    "@runmesh/core": "workspace:*",
+    "@runmesh/tools": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0"
+  }
+}

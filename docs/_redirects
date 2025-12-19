@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects
+# https://developers.cloudflare.com/pages/platform/redirects
+
+# Redirect all 404s to index.html (useful for single-page app behavior)
+/* /index.html 200
+
+# Optional: Add specific redirects
+# /docs/* /index.html 200
+# /old-page /new-page 301

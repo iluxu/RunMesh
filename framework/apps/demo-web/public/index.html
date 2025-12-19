@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RunMesh Demo - AI Agent Platform</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>
+          <span class="logo">⚡</span>
+          RunMesh Demo
+        </h1>
+        <p class="subtitle">OpenAI-first JS/TS Framework for Agentic Applications</p>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="agent">Simple Agent</button>
+        <button class="tab" data-tab="mimi8">Horse Racing (Mimi8)</button>
+        <button class="tab" data-tab="fusion">Fusion Mode</button>
+        <button class="tab" data-tab="odds">Odds Parser</button>
+      </nav>
+
+      <!-- Simple Agent Tab -->
+      <div id="agent" class="tab-content active">
+        <div class="card">
+          <h2>Simple Agent Interaction</h2>
+          <p>Ask the agent anything. It has access to tools and can perform multi-step reasoning.</p>
+
+          <div class="input-group">
+            <textarea
+              id="agent-prompt"
+              placeholder="Ask a question or give a task..."
+              rows="4"
+            ></textarea>
+            <button id="agent-submit" class="btn btn-primary">Send</button>
+          </div>
+
+          <div id="agent-result" class="result"></div>
+        </div>
+      </div>
+
+      <!-- Mimi8 Tab -->
+      <div id="mimi8" class="tab-content">
+        <div class="card">
+          <h2>Horse Racing Analysis (Mimi8)</h2>
+          <p>
+            Advanced horse racing prediction using ML models and structured output. Upload race data
+            to get ticket recommendations.
+          </p>
+
+          <div class="input-group">
+            <div class="file-info">
+              <p><strong>Expected files:</strong></p>
+              <ul>
+                <li>donnees_jour.csv - Race data</li>
+                <li>infos_brutes.txt - Additional race info</li>
+                <li>world_model.json - World model parameters</li>
+                <li>tuning_state.json - Tuning configuration</li>
+              </ul>
+            </div>
+            <button id="mimi8-submit" class="btn btn-primary">Run Analysis</button>
+          </div>
+
+          <div id="mimi8-result" class="result"></div>
+        </div>
+      </div>
+
+      <!-- Fusion Mode Tab -->
+      <div id="fusion" class="tab-content">
+        <div class="card">
+          <h2>Fusion Mode - Multi-Run Analysis</h2>
+          <p>
+            Run multiple analysis iterations with memory persistence. The agent learns from previous
+            runs.
+          </p>
+
+          <div class="input-group">
+            <label for="fusion-session">Session ID:</label>
+            <input
+              type="text"
+              id="fusion-session"
+              placeholder="my-session-123"
+              value="default-session"
+            />
+
+            <label for="fusion-runs">Number of Runs:</label>
+            <input type="number" id="fusion-runs" value="3" min="1" max="10" />
+
+            <button id="fusion-submit" class="btn btn-primary">Start Fusion Analysis</button>
+          </div>
+
+          <div id="fusion-result" class="result"></div>
+        </div>
+      </div>
+
+      <!-- Odds Parser Tab -->
+      <div id="odds" class="tab-content">
+        <div class="card">
+          <h2>Odds Parser</h2>
+          <p>Extract betting odds from web pages using HTML parsing and AI analysis.</p>
+
+          <div class="input-group">
+            <label for="odds-url">URL:</label>
+            <input
+              type="url"
+              id="odds-url"
+              placeholder="https://example.com/betting-odds"
+              value="https://www.hippodrome-reunion.com/programmes-courses"
+            />
+
+            <button id="odds-submit" class="btn btn-primary">Parse Odds</button>
+          </div>
+
+          <div id="odds-result" class="result"></div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          Built with
+          <a href="https://github.com/iluxu/RunMesh" target="_blank">RunMesh</a>
+          | OpenAI-first Agent Framework
+        </p>
+      </footer>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,4 +1,10 @@
-import { RunMeshOpenAI, ChatMessage, ChatRequest, ChatResponse, ResponseStream } from "@runmesh/core";
+import {
+  RunMeshOpenAI,
+  ChatMessage,
+  ChatRequest,
+  ChatResponse,
+  ResponseStream
+} from "@runmesh/core";
 import { MemoryAdapter } from "@runmesh/memory";
 import { ToolExecutor, ToolRegistry } from "@runmesh/tools";
 import { Policy, enforcePolicies } from "./policies.js";
@@ -6,7 +12,7 @@ import { Policy, enforcePolicies } from "./policies.js";
 export type AgentExecutionConfig = {
   name: string;
   systemPrompt?: string;
-  model: string;
+  model?: string;
   client: RunMeshOpenAI;
   tools?: ToolRegistry;
   memory?: MemoryAdapter;
@@ -107,7 +113,10 @@ export class AgentExecutor {
     return messages;
   }
 
-  private async handleToolCalls(response: ChatResponse, messages: ChatMessage[]): Promise<AgentStep[]> {
+  private async handleToolCalls(
+    response: ChatResponse,
+    messages: ChatMessage[]
+  ): Promise<AgentStep[]> {
     if (!this.toolExecutor) return [];
 
     const steps: AgentStep[] = [];
@@ -116,7 +125,9 @@ export class AgentExecutor {
     for (const call of calls) {
       if (call.type !== "function") continue;
       const input = call.function.arguments ? JSON.parse(call.function.arguments) : {};
-      const output = await this.toolExecutor.execute(call.function.name, input, { runId: response.id });
+      const output = await this.toolExecutor.execute(call.function.name, input, {
+        runId: response.id
+      });
       steps.push({ type: "tool", name: call.function.name, input, output });
       messages.push({
         role: "tool",

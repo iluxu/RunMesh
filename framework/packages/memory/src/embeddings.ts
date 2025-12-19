@@ -7,7 +7,10 @@ export interface EmbeddingsProvider {
 }
 
 export class OpenAIEmbeddings implements EmbeddingsProvider {
-  constructor(private readonly client: RunMeshOpenAI, private readonly model = "text-embedding-3-small") {}
+  constructor(
+    private readonly client: RunMeshOpenAI,
+    private readonly model = "text-embedding-3-small"
+  ) {}
 
   async embed(text: string): Promise<EmbeddingVector> {
     const response = await this.client.client.embeddings.create({

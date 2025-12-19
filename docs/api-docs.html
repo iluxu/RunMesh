@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - RunMesh</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #0088ff;
+            --dark: #0a0e1a;
+            --darker: #050810;
+            --light: #e8f4ff;
+            --gray: #6b7280;
+            --border: #1a1f2e;
+            --code-bg: #0f1420;
+            --accent: #ff0080;
+            --font-display: 'Syne', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-mono);
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .breadcrumb {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .api-section {
+            margin-bottom: 4rem;
+        }
+        
+        h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin: 2rem 0 1rem;
+        }
+        
+        .method-signature {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .parameter-list {
+            margin: 1rem 0;
+        }
+        
+        .parameter {
+            background: rgba(26, 31, 46, 0.5);
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .param-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--font-mono);
+        }
+        
+        .param-type {
+            color: var(--secondary);
+            font-style: italic;
+            margin-left: 0.5rem;
+        }
+        
+        .param-required {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .param-optional {
+            background: var(--gray);
+            color: var(--dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .param-desc {
+            color: var(--gray);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .code-example {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .example-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .code-keyword { color: #ff79c6; }
+        .code-function { color: #50fa7b; }
+        .code-string { color: #f1fa8c; }
+        .code-comment { color: #6272a4; }
+        .code-variable { color: #8be9fd; }
+        .code-const { color: #bd93f9; }
+        
+        .note {
+            background: rgba(0, 136, 255, 0.1);
+            border-left: 3px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning {
+            background: rgba(255, 0, 128, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 2rem;
+            top: 10rem;
+            width: 250px;
+            background: rgba(26, 31, 46, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .sidebar h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar li {
+            margin: 0.5rem 0;
+        }
+        
+        .sidebar a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .sidebar a:hover {
+            color: var(--primary);
+        }
+        
+        .content-wrapper {
+            margin-left: 300px;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+            .content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4>Quick Navigation</h4>
+        <ul>
+            <li><a href="#agent">Agent</a></li>
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="#memory">Memory</a></li>
+            <li><a href="#streaming">Streaming</a></li>
+            <li><a href="#policies">Policies</a></li>
+            <li><a href="#structured">Structured Outputs</a></li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <header>
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a> / API Documentation
+                </div>
+                <h1>API Documentation</h1>
+            </header>
+
+            <section class="api-section" id="agent">
+                <h2>Agent</h2>
+                <p>The Agent is the core orchestrator that manages prompts, tools, memory, and execution flow.</p>
+
+                <h3>createAgent(config)</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">function</span> <span class="code-function">createAgent</span>(config: AgentConfig): Agent</code>
+                </div>
+
+                <div class="parameter-list">
+                    <h4 style="color: var(--light); margin-bottom: 1rem;">Parameters</h4>
+                    
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">name</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                        </div>
+                        <div class="param-desc">Unique identifier for the agent instance</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">model</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">OpenAI model to use (e.g., "gpt-5.2"). Optional if the client sets a default.</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">client</span>
+                            <span class="param-type">RunMeshOpenAI</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">Optional OpenAI client from @runmesh/core. If omitted, RunMesh creates one.</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">systemPrompt</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">System message that defines the agent's behavior and role</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">tools</span>
+                            <span class="param-type">ToolRegistry</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">Registry of tools the agent can use</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">memory</span>
+                            <span class="param-type">MemoryAdapter</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">Memory adapter for conversation history and context</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">policies</span>
+                            <span class="param-type">Policy[]</span>
+                            <span class="param-optional">optional</span>
+                        </div>
+                        <div class="param-desc">Array of policies to enforce on agent actions</div>
+                    </div>
+                </div>
+
+                <h3>agent.run(prompt)</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">async</span> <span class="code-function">run</span>(prompt: <span class="code-const">string</span>): <span class="code-const">Promise</span>&lt;AgentRunResult&gt;</code>
+                </div>
+                <p>Execute the agent with a single prompt. Handles tool loops automatically.</p>
+
+                <div class="code-example">
+                    <div class="example-title">Example</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">agent</span> = <span class="code-function">createAgent</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"assistant"</span>,
+  <span class="code-variable">model</span>: <span class="code-string">"gpt-5.2"</span>,
+  <span class="code-variable">systemPrompt</span>: <span class="code-string">"You are a helpful assistant"</span>
+});
+
+<span class="code-const">const</span> <span class="code-variable">result</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">run</span>(<span class="code-string">"What is 2+2?"</span>);
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">result</span>.<span class="code-variable">response</span>.<span class="code-variable">choices</span>[<span class="code-string">0</span>].<span class="code-variable">message</span>.<span class="code-variable">content</span>);</code>
+                </div>
+
+                <h3>agent.stream(prompt)</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">async</span> <span class="code-function">stream</span>(prompt: <span class="code-const">string</span>): <span class="code-const">Promise</span>&lt;ResponseStream&gt;</code>
+                </div>
+                <p>Stream the agent's response in real-time.</p>
+
+                <div class="code-example">
+                    <div class="example-title">Example</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">stream</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">stream</span>(<span class="code-string">"Tell me a story"</span>);
+
+<span class="code-keyword">for await</span> (<span class="code-const">const</span> <span class="code-variable">event</span> <span class="code-keyword">of</span> <span class="code-variable">stream</span>) {
+  <span class="code-keyword">if</span> (<span class="code-variable">event</span>.<span class="code-variable">type</span> === <span class="code-string">'token'</span>) {
+    <span class="code-variable">process</span>.<span class="code-variable">stdout</span>.<span class="code-function">write</span>(<span class="code-variable">event</span>.<span class="code-variable">value</span>);
+  }
+}</code>
+                </div>
+            </section>
+
+            <section class="api-section" id="tools">
+                <h2>Tools</h2>
+                <p>Tools are functions that agents can call to perform specific actions.</p>
+
+                <h3>tool(definition)</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">function</span> <span class="code-function">tool</span>(definition: ToolDefinition): Tool</code>
+                </div>
+
+                <div class="parameter-list">
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">name</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                        </div>
+                        <div class="param-desc">Unique tool name (snake_case recommended)</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">description</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                        </div>
+                        <div class="param-desc">Clear description of what the tool does</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">schema</span>
+                            <span class="param-type">ZodSchema</span>
+                            <span class="param-required">required</span>
+                        </div>
+                        <div class="param-desc">Zod schema for input validation</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">handler</span>
+                            <span class="param-type">(input) => any</span>
+                            <span class="param-required">required</span>
+                        </div>
+                        <div class="param-desc">Function that executes the tool's logic</div>
+                    </div>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: Weather Tool</div>
+                    <code><span class="code-keyword">import</span> { <span class="code-variable">tool</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/tools"</span>;
+<span class="code-keyword">import</span> { <span class="code-variable">z</span> } <span class="code-keyword">from</span> <span class="code-string">"zod"</span>;
+
+<span class="code-const">const</span> <span class="code-variable">weatherTool</span> = <span class="code-function">tool</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"get_weather"</span>,
+  <span class="code-variable">description</span>: <span class="code-string">"Get current weather for a location"</span>,
+  <span class="code-variable">schema</span>: <span class="code-variable">z</span>.<span class="code-function">object</span>({
+    <span class="code-variable">location</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>().<span class="code-function">describe</span>(<span class="code-string">"City name or coordinates"</span>),
+    <span class="code-variable">units</span>: <span class="code-variable">z</span>.<span class="code-function">enum</span>([<span class="code-string">"celsius"</span>, <span class="code-string">"fahrenheit"</span>]).<span class="code-function">default</span>(<span class="code-string">"celsius"</span>)
+  }),
+  <span class="code-variable">handler</span>: <span class="code-keyword">async</span> (input) => {
+    <span class="code-comment">// Call weather API</span>
+    <span class="code-const">const</span> <span class="code-variable">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">`api.weather.com?q=${input.location}`</span>);
+    <span class="code-const">const</span> <span class="code-variable">data</span> = <span class="code-keyword">await</span> <span class="code-variable">response</span>.<span class="code-function">json</span>();
+    <span class="code-keyword">return</span> {
+      <span class="code-variable">temperature</span>: <span class="code-variable">data</span>.<span class="code-variable">temp</span>,
+      <span class="code-variable">conditions</span>: <span class="code-variable">data</span>.<span class="code-variable">weather</span>
+    };
+  }
+});</code>
+                </div>
+
+                <h3>ToolRegistry</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">class</span> <span class="code-function">ToolRegistry</span></code>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: Registering Multiple Tools</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">tools</span> = <span class="code-keyword">new</span> <span class="code-function">ToolRegistry</span>();
+
+<span class="code-variable">tools</span>.<span class="code-function">register</span>(<span class="code-variable">weatherTool</span>);
+<span class="code-variable">tools</span>.<span class="code-function">register</span>(<span class="code-variable">calculatorTool</span>);
+<span class="code-variable">tools</span>.<span class="code-function">register</span>(<span class="code-variable">searchTool</span>);
+
+<span class="code-const">const</span> <span class="code-variable">agent</span> = <span class="code-function">createAgent</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"assistant"</span>,
+  <span class="code-variable">model</span>: <span class="code-string">"gpt-5.2"</span>,
+  <span class="code-variable">tools</span> <span class="code-comment">// Pass the registry</span>
+});</code>
+                </div>
+            </section>
+
+            <section class="api-section" id="memory">
+                <h2>Memory</h2>
+                <p>Memory adapters enable agents to maintain conversation history and context.</p>
+
+                <h3>MemoryAdapter Interface</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">interface</span> <span class="code-function">MemoryAdapter</span> {
+  <span class="code-function">add</span>(agentName: <span class="code-const">string</span>, message: ChatMessage): <span class="code-const">Promise</span>&lt;<span class="code-const">void</span>&gt;;
+  <span class="code-function">history</span>(agentName: <span class="code-const">string</span>, limit?: <span class="code-const">number</span>): <span class="code-const">Promise</span>&lt;MemoryMessage[]&gt;;
+}</code>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: In-Memory Adapter</div>
+                    <code><span class="code-keyword">import</span> { <span class="code-variable">InMemoryAdapter</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/memory"</span>;
+
+<span class="code-const">const</span> <span class="code-variable">memory</span> = <span class="code-keyword">new</span> <span class="code-function">InMemoryAdapter</span>();
+
+<span class="code-const">const</span> <span class="code-variable">agent</span> = <span class="code-function">createAgent</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"assistant"</span>,
+  <span class="code-variable">model</span>: <span class="code-string">"gpt-5.2"</span>,
+  <span class="code-variable">memory</span> <span class="code-comment">// Agent will remember conversation history</span>
+});</code>
+                </div>
+
+                <div class="note">
+                    <strong>Note:</strong> RunMesh supports custom memory adapters. Implement the MemoryAdapter interface to integrate with databases, Redis, or other storage solutions.
+                </div>
+            </section>
+
+            <section class="api-section" id="streaming">
+                <h2>Streaming</h2>
+                <p>Stream responses in real-time for responsive user experiences.</p>
+
+                <h3>Event Types</h3>
+                <div class="parameter-list">
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">token</span>
+                            <span class="param-type">StreamEvent</span>
+                        </div>
+                        <div class="param-desc">Emitted for each token in the response</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">tool_call</span>
+                            <span class="param-type">StreamEvent</span>
+                        </div>
+                        <div class="param-desc">Emitted when the agent decides to use a tool</div>
+                    </div>
+
+                    <div class="parameter">
+                        <div>
+                            <span class="param-name">final</span>
+                            <span class="param-type">StreamEvent</span>
+                        </div>
+                        <div class="param-desc">Emitted with the complete response</div>
+                    </div>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: CLI with Streaming</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">stream</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">stream</span>(<span class="code-variable">userInput</span>);
+
+<span class="code-keyword">for await</span> (<span class="code-const">const</span> <span class="code-variable">event</span> <span class="code-keyword">of</span> <span class="code-variable">stream</span>) {
+  <span class="code-keyword">switch</span> (<span class="code-variable">event</span>.<span class="code-variable">type</span>) {
+    <span class="code-keyword">case</span> <span class="code-string">'token'</span>:
+      <span class="code-variable">process</span>.<span class="code-variable">stdout</span>.<span class="code-function">write</span>(<span class="code-variable">event</span>.<span class="code-variable">value</span>);
+      <span class="code-keyword">break</span>;
+    
+    <span class="code-keyword">case</span> <span class="code-string">'tool_call'</span>:
+      <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">`Tool call: ${event.toolCall?.function?.name ?? "unknown"}`</span>);
+      <span class="code-keyword">break</span>;
+    
+    <span class="code-keyword">case</span> <span class="code-string">'final'</span>:
+      <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">`Final: ${event.message?.content ?? ""}`</span>);
+      <span class="code-keyword">break</span>;
+  }
+}</code>
+                </div>
+            </section>
+
+            <section class="api-section" id="policies">
+                <h2>Policies</h2>
+                <p>Policies enforce rules and constraints on agent behavior.</p>
+
+                <h3>Policy Function</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">type</span> <span class="code-function">Policy</span> = (context: PolicyContext) => PolicyResult | <span class="code-const">Promise</span>&lt;PolicyResult&gt;</code>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: Rate Limiting Policy</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">rateLimitPolicy</span>: Policy = <span class="code-keyword">async</span> (context) => {
+  <span class="code-const">const</span> <span class="code-variable">requestCount</span> = <span class="code-keyword">await</span> <span class="code-function">getRequestCount</span>(context.<span class="code-variable">agent</span>);
+  
+  <span class="code-keyword">if</span> (<span class="code-variable">requestCount</span> > <span class="code-string">100</span>) {
+    <span class="code-keyword">return</span> {
+      <span class="code-variable">allow</span>: <span class="code-const">false</span>,
+      <span class="code-variable">reason</span>: <span class="code-string">"Rate limit exceeded"</span>
+    };
+  }
+  
+  <span class="code-keyword">return</span> { <span class="code-variable">allow</span>: <span class="code-const">true</span> };
+};
+
+<span class="code-const">const</span> <span class="code-variable">agent</span> = <span class="code-function">createAgent</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"assistant"</span>,
+  <span class="code-variable">model</span>: <span class="code-string">"gpt-5.2"</span>,
+  <span class="code-variable">policies</span>: [<span class="code-variable">rateLimitPolicy</span>]
+});</code>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: Content Filtering Policy</div>
+                    <code><span class="code-const">const</span> <span class="code-variable">contentFilterPolicy</span>: Policy = (context) => {
+  <span class="code-const">const</span> <span class="code-variable">lastMessage</span> = context.<span class="code-variable">messages</span>[context.<span class="code-variable">messages</span>.<span class="code-variable">length</span> - <span class="code-string">1</span>];
+  <span class="code-const">const</span> <span class="code-variable">content</span> = lastMessage.<span class="code-variable">content</span>.<span class="code-function">toLowerCase</span>();
+  
+  <span class="code-const">const</span> <span class="code-variable">bannedWords</span> = [<span class="code-string">"spam"</span>, <span class="code-string">"abuse"</span>];
+  <span class="code-const">const</span> <span class="code-variable">hasBannedContent</span> = bannedWords.<span class="code-function">some</span>(word => content.<span class="code-function">includes</span>(word));
+  
+  <span class="code-keyword">if</span> (<span class="code-variable">hasBannedContent</span>) {
+    <span class="code-keyword">return</span> {
+      <span class="code-variable">allow</span>: <span class="code-const">false</span>,
+      <span class="code-variable">reason</span>: <span class="code-string">"Content violates policy"</span>
+    };
+  }
+  
+  <span class="code-keyword">return</span> { <span class="code-variable">allow</span>: <span class="code-const">true</span> };
+};</code>
+                </div>
+            </section>
+
+            <section class="api-section" id="structured">
+                <h2>Structured Outputs</h2>
+                <p>Extract structured, validated data from agent responses.</p>
+
+                <h3>generateStructuredOutput()</h3>
+                <div class="method-signature">
+                    <code><span class="code-keyword">async function</span> <span class="code-function">generateStructuredOutput</span>&lt;T&gt;(
+  options: StructuredGenerateOptions&lt;T&gt;
+): <span class="code-const">Promise</span>&lt;StructuredResult&lt;T&gt;&gt;</code>
+                </div>
+
+                <div class="code-example">
+                    <div class="example-title">Example: Extract Contact Information</div>
+                    <code><span class="code-keyword">import</span> { <span class="code-variable">createOpenAI</span>, <span class="code-variable">generateStructuredOutput</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/core"</span>;
+<span class="code-keyword">import</span> { <span class="code-variable">z</span> } <span class="code-keyword">from</span> <span class="code-string">"zod"</span>;
+
+<span class="code-const">const</span> <span class="code-variable">contactSchema</span> = <span class="code-variable">z</span>.<span class="code-function">object</span>({
+  <span class="code-variable">name</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>(),
+  <span class="code-variable">email</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>().<span class="code-function">email</span>(),
+  <span class="code-variable">phone</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>().<span class="code-function">optional</span>(),
+  <span class="code-variable">company</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>().<span class="code-function">optional</span>()
+});
+
+<span class="code-const">const</span> <span class="code-variable">client</span> = <span class="code-function">createOpenAI</span>({
+  <span class="code-variable">apiKey</span>: <span class="code-variable">process</span>.<span class="code-variable">env</span>.<span class="code-variable">OPENAI_API_KEY</span>,
+  <span class="code-variable">defaultModel</span>: <span class="code-string">"gpt-5.2"</span>
+});
+
+<span class="code-const">const</span> <span class="code-variable">result</span> = <span class="code-keyword">await</span> <span class="code-function">generateStructuredOutput</span>({
+  <span class="code-variable">client</span>,
+  <span class="code-variable">request</span>: {
+    <span class="code-variable">messages</span>: [
+      { <span class="code-variable">role</span>: <span class="code-string">"user"</span>, <span class="code-variable">content</span>: <span class="code-string">"Extract contact info: John Doe, john@example.com, works at Acme Inc"</span> }
+    ]
+  },
+  <span class="code-variable">schema</span>: <span class="code-variable">contactSchema</span>,
+  <span class="code-variable">maxRetries</span>: <span class="code-const">2</span>
+});
+
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">result</span>.<span class="code-variable">value</span>);
+<span class="code-comment">// { name: "John Doe", email: "john@example.com", company: "Acme Inc" }</span></code>
+                </div>
+
+                <div class="warning">
+                    <strong>Warning:</strong> Structured outputs may retry multiple times if the response doesn't match the schema. Set appropriate timeouts and handle errors.
+                </div>
+            </section>
+
+            <section class="api-section">
+                <h2>Advanced Examples</h2>
+
+                <h3>Multi-Tool Agent with Memory</h3>
+                <div class="code-example">
+                    <code><span class="code-keyword">import</span> { <span class="code-variable">createAgent</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/agent"</span>;
+<span class="code-keyword">import</span> { <span class="code-variable">tool</span>, <span class="code-variable">ToolRegistry</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/tools"</span>;
+<span class="code-keyword">import</span> { <span class="code-variable">InMemoryAdapter</span> } <span class="code-keyword">from</span> <span class="code-string">"@runmesh/memory"</span>;
+<span class="code-keyword">import</span> { <span class="code-variable">z</span> } <span class="code-keyword">from</span> <span class="code-string">"zod"</span>;
+
+<span class="code-comment">// Define tools</span>
+<span class="code-const">const</span> <span class="code-variable">tools</span> = <span class="code-keyword">new</span> <span class="code-function">ToolRegistry</span>();
+
+<span class="code-variable">tools</span>.<span class="code-function">register</span>(<span class="code-function">tool</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"calculator"</span>,
+  <span class="code-variable">description</span>: <span class="code-string">"Perform mathematical calculations"</span>,
+  <span class="code-variable">schema</span>: <span class="code-variable">z</span>.<span class="code-function">object</span>({
+    <span class="code-variable">expression</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>()
+  }),
+  <span class="code-variable">handler</span>: (input) => <span class="code-function">eval</span>(input.<span class="code-variable">expression</span>)
+}));
+
+<span class="code-variable">tools</span>.<span class="code-function">register</span>(<span class="code-function">tool</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"search_web"</span>,
+  <span class="code-variable">description</span>: <span class="code-string">"Search the web for information"</span>,
+  <span class="code-variable">schema</span>: <span class="code-variable">z</span>.<span class="code-function">object</span>({
+    <span class="code-variable">query</span>: <span class="code-variable">z</span>.<span class="code-function">string</span>()
+  }),
+  <span class="code-variable">handler</span>: <span class="code-keyword">async</span> (input) => {
+    <span class="code-comment">// Implement web search</span>
+    <span class="code-keyword">return</span> { <span class="code-variable">results</span>: [...] };
+  }
+}));
+
+<span class="code-comment">// Create agent with memory</span>
+<span class="code-const">const</span> <span class="code-variable">agent</span> = <span class="code-function">createAgent</span>({
+  <span class="code-variable">name</span>: <span class="code-string">"research-assistant"</span>,
+  <span class="code-variable">model</span>: <span class="code-string">"gpt-5.2"</span>,
+  <span class="code-variable">systemPrompt</span>: <span class="code-string">"You are a research assistant with web search and calculation capabilities."</span>,
+  <span class="code-variable">tools</span>,
+  <span class="code-variable">memory</span>: <span class="code-keyword">new</span> <span class="code-function">InMemoryAdapter</span>()
+});
+
+<span class="code-comment">// Use the agent</span>
+<span class="code-const">const</span> <span class="code-variable">result1</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">run</span>(<span class="code-string">"What is 15 * 23?"</span>);
+<span class="code-const">const</span> <span class="code-variable">result2</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">run</span>(<span class="code-string">"Search for recent AI developments"</span>);
+<span class="code-const">const</span> <span class="code-variable">result3</span> = <span class="code-keyword">await</span> <span class="code-variable">agent</span>.<span class="code-function">run</span>(<span class="code-string">"What did you calculate earlier?"</span>); <span class="code-comment">// Uses memory</span></code>
+                </div>
+            </section>
+
+            <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--gray);">
+                <p><a href="index.html" style="color: var(--primary); text-decoration: none;">← Back to Home</a></p>
+                <p style="margin-top: 1rem;">RunMesh API Documentation | <a href="https://github.com/iluxu/RunMesh" style="color: var(--primary); text-decoration: none;">GitHub</a></p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

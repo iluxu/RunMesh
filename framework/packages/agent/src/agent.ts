@@ -1,4 +1,4 @@
-import { createOpenAI } from "@runmesh/core";
+import { createOpenAI, RunMeshOpenAI } from "@runmesh/core";
 import { MemoryAdapter } from "@runmesh/memory";
 import { ToolRegistry } from "@runmesh/tools";
 import { AgentExecutor, AgentRunResult, AgentExecutionConfig } from "./executor.js";
@@ -7,7 +7,8 @@ import { Policy } from "./policies.js";
 
 export type AgentConfig = {
   name: string;
-  model: string;
+  model?: string;
+  client?: RunMeshOpenAI;
   systemPrompt?: string;
   tools?: ToolRegistry;
   memory?: MemoryAdapter;
@@ -19,9 +20,15 @@ export class Agent {
   private readonly planner: Planner;
 
   constructor(private readonly config: AgentConfig) {
-    const client = createOpenAI({ defaultModel: config.model });
+    // Use provided client or create a new one
+    const client = config.client || createOpenAI({ defaultModel: config.model || "gpt-4o" });
     const executionConfig: AgentExecutionConfig = {
-      ...config,
+      name: config.name,
+      model: config.model,
+      systemPrompt: config.systemPrompt,
+      tools: config.tools,
+      memory: config.memory,
+      policies: config.policies,
       client
     };
     this.executor = new AgentExecutor(executionConfig);
