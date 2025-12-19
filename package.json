@@ -1,0 +1,35 @@
+{
+  "name": "runmesh",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "RunMesh: OpenAI-first JS/TS agent runtime that is typed, observable, and extensible.",
+  "workspaces": [
+    "framework/packages/*",
+    "framework/apps/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iluxu/runmesh"
+  },
+  "keywords": [
+    "openai",
+    "agents",
+    "framework",
+    "typescript",
+    "ai"
+  ],
+  "packageManager": "pnpm@8.15.1",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

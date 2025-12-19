@@ -1,0 +1,15 @@
+{
+  "name": "runmesh-demo-cli",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "ts-node --transpileOnly ./index.ts"
+  },
+  "dependencies": {
+    "@runmesh/agent": "workspace:*",
+    "@runmesh/tools": "workspace:*",
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
+  }
+}
