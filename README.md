@@ -1,8 +1,8 @@
 # RunMesh
 
-**RunMesh** is an OpenAI-first **JS/TS framework** for building agentic applications: typed end-to-end, observable, and designed for production.
+**RunMesh** is a **JS/TS framework** for agentic applications, **OpenAI-first**, like **React/Vue/Angular** but for AI: a clean, typed, observable runtime layer.
 
-It provides a clean runtime layer for **agents + tools + streaming + structured outputs + memory**, so you don’t rewrite the same glue code for every OpenAI project.
+It provides the core runtime for **agents + tools + streaming + structured outputs + memory**, so you stop rewriting glue code for every AI project.
 
 > **Status:** Alpha (API may change). Chat Completions supported today. Responses API support is on the roadmap.
 
@@ -10,7 +10,7 @@ It provides a clean runtime layer for **agents + tools + streaming + structured 
 
 ## Why RunMesh
 
-Most OpenAI apps need the same building blocks:
+Modern AI apps keep needing the same building blocks:
 - tool calling with safe input validation
 - multi-round tool loops
 - streaming events for CLIs/servers
@@ -30,11 +30,11 @@ pnpm add @runmesh/agent @runmesh/tools zod
 npm i @runmesh/agent @runmesh/tools zod
 ```
 
-You’ll also need an OpenAI API key:
+OpenAI key required:
 
 ```bash
 export OPENAI_API_KEY="..."
-export OPENAI_MODEL="gpt-5.2"
+export OPENAI_MODEL="gpt-4o-mini"
 ```
 
 ## Quickstart
@@ -57,12 +57,12 @@ tools.register(
 
 const agent = createAgent({
   name: "demo",
-  model: process.env.OPENAI_MODEL ?? "gpt-5.2",
+  model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   systemPrompt: "You are a concise assistant. Use tools when helpful.",
   tools
 });
 
-const result = await agent.run("Quelle heure est-il à Paris ?");
+const result = await agent.run("Quelle heure est-il a Paris ?");
 console.log(result.response.choices[0]?.message?.content);
 ```
 
@@ -75,11 +75,11 @@ console.log(result.response.choices[0]?.message?.content);
 
 **Typed tools**
 - define tools with Zod
-- args validated before execution
-- Zod → JSON Schema export for OpenAI tool definitions
+- validate args before execution
+- export Zod -> JSON Schema for OpenAI tool definitions
 
 **Structured outputs**
-- `generateStructuredOutput(...)` re-queries on invalid JSON
+- `generateStructuredOutput(...)` retries on invalid JSON
 - schema-first extraction for reliable automation
 
 **Streaming**
@@ -88,23 +88,31 @@ console.log(result.response.choices[0]?.message?.content);
 
 **Observability**
 - pluggable logger/tracer hooks
-- token/cost helpers (where available)
+- token/cost helpers (when available)
+
+## Market Positioning / Comparison
+
+RunMesh is **higher-level than the OpenAI SDK**, **simpler than LangChain**, and **more typed/modern** for production use.
+
+- **OpenAI SDK**: great low-level API access, but you still assemble tools, loops, retries, and observability yourself.
+- **LangChain**: powerful, but can feel heavy and magic-heavy for clean, typed app code.
+- **RunMesh**: explicit runtime primitives, end-to-end typing, clean defaults, and a predictable execution loop.
+
+Think of it as the **React/Vue-style framework layer** for agentic apps.
 
 ## Demo CLI
 
-A working CLI demo showcasing tools + streaming lives here: `framework/apps/demo-cli`
-
-Run it:
+A streaming CLI demo lives here: `framework/apps/demo-cli`
 
 ```bash
 pnpm install
-pnpm --filter demo-cli run start "résume cet article: <url>"
+pnpm --filter demo-cli run start "summarize this article: <url>"
 ```
 
 See `framework/apps/demo-cli/index.ts` for the full example.
 
 ## Packages
-- `@runmesh/core` – OpenAI client wrapper, streaming, response helpers, errors
+- `@runmesh/core` – OpenAI client, streaming, response helpers, errors
 - `@runmesh/agent` – agent runtime, planner/executor, policies
 - `@runmesh/tools` – tool definition, registry, executor
 - `@runmesh/memory` – memory adapters, embeddings, retrieval
@@ -114,21 +122,21 @@ See `framework/apps/demo-cli/index.ts` for the full example.
 
 ## License (Important)
 
-RunMesh is licensed under Business Source License 1.1 (BSL 1.1).
+RunMesh is licensed under **Business Source License 1.1 (BSL 1.1)**.
 
 Free to use for:
 - personal projects
 - internal/company use
 - production deployments of your own apps
 
-Commercial hosted offerings / “RunMesh-as-a-Service” require a commercial license.
+Commercial hosted offerings / "RunMesh-as-a-Service" require a commercial license.
 
-A future change date can relicense to Apache-2.0 (see LICENSE).
+A future change date can relicense to Apache-2.0 (see `LICENSE`).
 
-If you need a commercial license: open an issue or contact the maintainer.
+For a commercial license: open an issue or contact the maintainer.
 
 ## Roadmap
-- Responses API-first path
+- Responses API-first
 - richer web demo (Next.js)
 - CI + tests
 - more adapters (Discord/Telegram)
@@ -136,4 +144,4 @@ If you need a commercial license: open an issue or contact the maintainer.
 
 ## Contributing
 
-PRs welcome. If you’re building something on RunMesh, share it in Discussions.
+PRs welcome. If you are building something on RunMesh, share it in Discussions.
