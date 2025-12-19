@@ -1,24 +1,27 @@
 # RunMesh
 
-**RunMesh** is a **JS/TS framework** for agentic applications, **OpenAI-first**, like **React/Vue/Angular** but for AI: a clean, typed, observable runtime layer.
+**Build agentic applications the right way.**
 
-It provides the core runtime for **agents + tools + streaming + structured outputs + memory**, so you stop rewriting glue code for every AI project.
+RunMesh is an OpenAI-first JS/TS framework for production-ready agentic apps. It is typed end-to-end, observable, and designed to replace glue code with a clean runtime layer for agents, tools, streaming, structured outputs, and memory.
 
-> **Status:** Alpha (API may change). Chat Completions supported today. Responses API support is on the roadmap.
+Docs: https://runmesh.llmbasedos.com  
+GitHub: https://github.com/iluxu/RunMesh
+
+> Status: Alpha (API may change). Chat Completions supported today. Responses API support is on the roadmap.
 
 ---
 
 ## Why RunMesh
 
-Modern AI apps keep needing the same building blocks:
+Most AI apps need the same building blocks:
 - tool calling with safe input validation
 - multi-round tool loops
-- streaming events for CLIs/servers
+- streaming events for CLIs and servers
 - structured JSON outputs that actually validate
-- memory + retrieval
+- memory and retrieval
 - observability (logs, cost, traces)
 
-RunMesh ships these as a **composable framework**, not a pile of snippets.
+RunMesh ships these as a composable framework, not a pile of snippets.
 
 ---
 
@@ -28,6 +31,8 @@ RunMesh ships these as a **composable framework**, not a pile of snippets.
 pnpm add @runmesh/agent @runmesh/tools zod
 # or
 npm i @runmesh/agent @runmesh/tools zod
+# or
+yarn add @runmesh/agent @runmesh/tools zod
 ```
 
 OpenAI key required:
@@ -58,47 +63,51 @@ tools.register(
 const agent = createAgent({
   name: "demo",
   model: process.env.OPENAI_MODEL ?? "gpt-5.2",
-  systemPrompt: "You are a concise assistant. Use tools when helpful.",
+  systemPrompt: "You are a concise assistant.",
   tools
 });
 
-const result = await agent.run("Quelle heure est-il a Paris ?");
+const result = await agent.run("What time is it?");
 console.log(result.response.choices[0]?.message?.content);
 ```
 
 ## Features
 
-**Agent runtime**
-- prompt + tools + memory + policies
+**Agent Runtime**
+- prompts, tools, memory, policies
 - multi-round tool loops with persisted tool-call messages
 - configurable `maxToolRounds`
 
-**Typed tools**
+**Typed Tools**
 - define tools with Zod
 - validate args before execution
 - export Zod -> JSON Schema for OpenAI tool definitions
 
-**Structured outputs**
+**Structured Outputs**
 - `generateStructuredOutput(...)` retries on invalid JSON
 - schema-first extraction for reliable automation
 
-**Streaming**
+**Streaming Support**
 - event iterator for real-time UX
-- emits `token`, `tool_call`, `tool_result`, `final`
+- emits `token`, `tool_call`, `final` (tool_result events are planned)
+
+**Memory and Retrieval**
+- pluggable memory adapters
+- embeddings and similarity search helpers
 
 **Observability**
-- pluggable logger/tracer hooks
-- token/cost helpers (when available)
+- logger and tracer hooks
+- token and cost helpers (when available)
 
 ## Market Positioning / Comparison
 
-RunMesh is **higher-level than the OpenAI SDK**, **simpler than LangChain**, and **more typed/modern** for production use.
+RunMesh is higher-level than the OpenAI SDK, simpler than LangChain, and more typed and modern for production use.
 
-- **OpenAI SDK**: great low-level API access, but you still assemble tools, loops, retries, and observability yourself.
+- **OpenAI SDK**: great low-level API access, but you still assemble tools, loops, retries, and observability.
 - **LangChain**: powerful, but can feel heavy and magic-heavy for clean, typed app code.
-- **RunMesh**: explicit runtime primitives, end-to-end typing, clean defaults, and a predictable execution loop.
+- **RunMesh**: explicit runtime primitives, end-to-end typing, and predictable execution loops.
 
-Think of it as the **React/Vue-style framework layer** for agentic apps.
+Think of it as the React/Vue style framework layer for agentic apps.
 
 ## Demo CLI
 
@@ -112,36 +121,36 @@ pnpm --filter demo-cli run start "summarize this article: <url>"
 See `framework/apps/demo-cli/index.ts` for the full example.
 
 ## Packages
-- `@runmesh/core` – OpenAI client, streaming, response helpers, errors
-- `@runmesh/agent` – agent runtime, planner/executor, policies
-- `@runmesh/tools` – tool definition, registry, executor
-- `@runmesh/memory` – memory adapters, embeddings, retrieval
-- `@runmesh/schema` – Zod validation + JSON Schema export
-- `@runmesh/observability` – logger, tracer, cost estimation
-- `@runmesh/adapters` – CLI/Web/Bot adapters
+- `@runmesh/core` - OpenAI client, streaming, response helpers, errors
+- `@runmesh/agent` - agent runtime, planner/executor, policies
+- `@runmesh/tools` - tool definition, registry, executor
+- `@runmesh/memory` - memory adapters, embeddings, retrieval
+- `@runmesh/schema` - Zod validation and JSON Schema export
+- `@runmesh/observability` - logger, tracer, cost estimation
+- `@runmesh/adapters` - CLI, Web, and Bot adapters
 
 ## License (Important)
 
-RunMesh is licensed under **Business Source License 1.1 (BSL 1.1)**.
+RunMesh is licensed under Business Source License 1.1 (BSL 1.1).
 
 Free to use for:
 - personal projects
-- internal/company use
+- internal or company use
 - production deployments of your own apps
 
-Commercial hosted offerings / "RunMesh-as-a-Service" require a commercial license.
+Commercial hosted offerings or "RunMesh-as-a-Service" require a commercial license.
 
-A future change date can relicense to Apache-2.0 (see `LICENSE`).
+A future change date will relicense to Apache-2.0 (see `LICENSE`).
 
-For a commercial license: open an issue or contact the maintainer.
+For a commercial license, open an issue or contact the maintainer.
 
 ## Roadmap
-- Responses API-first
+- Responses API first path
 - richer web demo (Next.js)
-- CI + tests
-- more adapters (Discord/Telegram)
-- replayable runs + persistent traces
+- CI and tests
+- more adapters (Discord, Telegram)
+- replayable runs and persistent traces
 
 ## Contributing
 
-PRs welcome. If you are building something on RunMesh, share it in Discussions.
+PRs welcome. If you build something with RunMesh, share it in Discussions.
