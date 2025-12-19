@@ -34,7 +34,7 @@ You’ll also need an OpenAI API key:
 
 ```bash
 export OPENAI_API_KEY="..."
-export OPENAI_MODEL="gpt-4o-mini"
+export OPENAI_MODEL="gpt-5.2"
 ```
 
 ## Quickstart
@@ -57,7 +57,7 @@ tools.register(
 
 const agent = createAgent({
   name: "demo",
-  model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+  model: process.env.OPENAI_MODEL ?? "gpt-5.2",
   systemPrompt: "You are a concise assistant. Use tools when helpful.",
   tools
 });
