@@ -1,21 +1,88 @@
-MIT License
+Business Source License 1.1
 
-Copyright (c) 2024 RunMesh
+Parameters
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Licensor:              RunMesh
+Licensed Work:         RunMesh
+Change Date:           2027-01-01
+Change License:        Apache License, Version 2.0
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Terms
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The Licensor hereby grants you the right to copy, modify, create derivative
+works, redistribute, and make non-production use of the Licensed Work. The
+Licensor may make an Additional Use Grant, above, permitting limited production
+use.
+
+Effective on the Change Date, or the fourth anniversary of the first publicly
+available distribution of a specific version of the Licensed Work under this
+License, whichever comes first, the Licensor grants you rights under the terms
+of the Change License, and the rights granted in the paragraph above terminate.
+
+If your use of the Licensed Work does not comply with the requirements
+currently in effect as described in this License, you must purchase a
+commercial license from the Licensor, its affiliated entities, or authorized
+resellers, or you must refrain from using the Licensed Work.
+
+Production Use
+
+Production use means use of the Licensed Work or a work based on the Licensed
+Work, in whole or in part, in production or in connection with the provision of
+any commercial or non-commercial hosted or managed service, whether the use is
+direct or indirect, on your own behalf or on behalf of third parties, for any
+purpose. This includes without limitation offering “RunMesh-as-a-Service” or
+similar hosted products.
+
+You may make non-production use of the Licensed Work without any obligation to
+pay license fees. Production use is not granted except as set forth in a
+separate commercial agreement.
+
+Notices
+
+You must ensure that anyone who gets a copy of any part of the Licensed Work
+from you also gets a copy of this License and the Change License.
+
+You must not remove or alter the license notices (including copyright notices
+and patent notices) in the Licensed Work.
+
+Compliance
+
+While using the Licensed Work, you must comply with all applicable laws,
+including data protection, privacy, and export control laws.
+
+Warranty Disclaimer
+
+THE LICENSED WORK IS PROVIDED “AS IS” AND WITHOUT WARRANTIES OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION WARRANTIES OF TITLE,
+NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE. You are
+solely responsible for determining the appropriateness of using or
+redistributing the Licensed Work and assume any risks associated with your
+exercise of permissions under this License.
+
+Limitation of Liability
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT AND UNDER NO LEGAL
+THEORY SHALL THE LICENSOR BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY DIRECT,
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES OF ANY CHARACTER
+ARISING AS A RESULT OF THIS LICENSE OR THE USE OF THE LICENSED WORK INCLUDING
+BUT NOT LIMITED TO DAMAGES FOR LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER
+FAILURE OR MALFUNCTION, OR ANY AND ALL OTHER COMMERCIAL DAMAGES OR LOSSES.
+
+Trademarks
+
+This License does not grant you rights to use any Licensor name, logo, or
+trademarks.
+
+Termination
+
+If you use the Licensed Work in violation of this License, such use is outside
+the scope of the License and terminates the rights granted herein. If the
+Licensor notifies you of non-compliance and you fail to cure it within 30 days,
+your rights terminate immediately.
+
+Governing Law
+
+This License will be governed by and construed in accordance with the laws of
+the jurisdiction set forth in the Additional Use Grant, if any, or otherwise in
+the jurisdiction of the Licensor’s principal place of business, without regard
+to its conflict of law provisions.
