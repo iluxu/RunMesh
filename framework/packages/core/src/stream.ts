@@ -1,13 +1,12 @@
 import OpenAI from "openai";
+import { ChatCompletionMessageToolCall } from "openai/resources/chat/completions";
 
 export type StreamChunk = OpenAI.Chat.Completions.ChatCompletionChunk;
+export type ToolCall = NonNullable<StreamChunk["choices"][number]["delta"]["tool_calls"]>[number];
 
 export type StreamEvent =
   | { type: "token"; value: string }
-  | {
-      type: "tool_call";
-      toolCall: NonNullable<StreamChunk["choices"][number]["delta"]["tool_calls"]>[number];
-    }
+  | { type: "tool_call"; toolCall: ToolCall }
   | { type: "final"; message: OpenAI.Chat.Completions.ChatCompletionMessage };
 
 export class ResponseStream implements AsyncIterable<StreamEvent> {
@@ -15,23 +14,26 @@ export class ResponseStream implements AsyncIterable<StreamEvent> {
 
   async *[Symbol.asyncIterator](): AsyncIterator<StreamEvent> {
     let assembled = "";
-    let role: OpenAI.Chat.Completions.ChatCompletionRole = "assistant";
-    const collectedToolCalls: NonNullable<StreamChunk["choices"][number]["delta"]["tool_calls"]>[number][] = [];
+    const collectedToolCalls: ToolCall[] = [];
 
     for await (const chunk of this.source) {
       const choice = chunk.choices[0];
       if (!choice) continue;
-
-      if (choice.delta?.role) {
-        role = choice.delta.role;
-      }
 
       const contentDelta = choice.delta?.content;
       if (typeof contentDelta === "string") {
         assembled += contentDelta;
         yield { type: "token", value: contentDelta };
       } else if (Array.isArray(contentDelta)) {
-        const text = contentDelta.map((part) => (typeof part === "string" ? part : part.text ?? "")).join("");
+        const text = (contentDelta as unknown[])
+          .map((part: unknown) => {
+            if (typeof part === "string") return part;
+            if (typeof part === "object" && part !== null && "text" in (part as Record<string, unknown>)) {
+              return (part as { text?: string }).text ?? "";
+            }
+            return "";
+          })
+          .join("");
         if (text) {
           assembled += text;
           yield { type: "token", value: text };
@@ -49,9 +51,10 @@ export class ResponseStream implements AsyncIterable<StreamEvent> {
         yield {
           type: "final",
           message: {
-            role,
+            role: "assistant",
             content: assembled,
-            tool_calls: collectedToolCalls.length ? collectedToolCalls : undefined
+            tool_calls: normalizeToolCalls(collectedToolCalls),
+            refusal: null
           }
         };
       }
@@ -70,4 +73,19 @@ export class ResponseStream implements AsyncIterable<StreamEvent> {
     }
     return fullText;
   }
+}
+
+function normalizeToolCalls(calls: ToolCall[]): ChatCompletionMessageToolCall[] | undefined {
+  if (!calls.length) return undefined;
+  return calls
+    .map((call, idx) => {
+      const fnName = call.function?.name ?? "unknown";
+      const fnArgs = call.function?.arguments ?? "{}";
+      return {
+        id: call.id ?? `tool_${idx}`,
+        function: { name: fnName, arguments: fnArgs },
+        type: "function" as const
+      };
+    })
+    .filter((call) => Boolean(call.function));
 }

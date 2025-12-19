@@ -15,7 +15,7 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@runmesh/*": ["framework/packages/*/src"]
+      "@runmesh/*": ["framework/packages/*/src/index.ts"]
     }
   },
   "include": ["framework"]

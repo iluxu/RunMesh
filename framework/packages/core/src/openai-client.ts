@@ -1,4 +1,11 @@
 import OpenAI, { ClientOptions } from "openai";
+import {
+  ChatCompletionCreateParams,
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionCreateParamsStreaming,
+  ChatCompletion,
+  ChatCompletionMessageParam
+} from "openai/resources/chat/completions";
 import { ResponseStream, StreamChunk } from "./stream.js";
 import { OpenAIRequestError } from "./errors.js";
 
@@ -10,22 +17,14 @@ export type CreateOpenAIConfig = {
   retries?: number;
 };
 
-export type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+export type ChatMessage = ChatCompletionMessageParam;
 
-export type ChatRequest = {
+export type ChatRequest = Omit<ChatCompletionCreateParams, "model" | "messages" | "stream"> & {
   model?: string;
   messages: ChatMessage[];
-  temperature?: number;
-  top_p?: number;
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  tools?: OpenAI.Chat.Completions.ChatCompletionTool[];
-  tool_choice?: OpenAI.Chat.Completions.ChatCompletionToolChoiceOption;
-  response_format?: OpenAI.Chat.Completions.ChatCompletionResponseFormat;
-  metadata?: Record<string, unknown>;
 };
 
-export type ChatResponse = OpenAI.Chat.Completions.ChatCompletion;
+export type ChatResponse = ChatCompletion;
 
 export type RunMeshOpenAI = {
   client: OpenAI;
@@ -40,9 +39,11 @@ export function createOpenAI(config: CreateOpenAIConfig): RunMeshOpenAI {
   const client = new OpenAI(buildClientOptions(config));
 
   async function respond(request: ChatRequest): Promise<ChatResponse> {
-    const payload = {
+    const payload: ChatCompletionCreateParamsNonStreaming = {
+      ...(request as ChatCompletionCreateParamsNonStreaming),
       model: request.model ?? config.defaultModel,
-      ...request
+      messages: request.messages,
+      stream: false
     };
 
     try {
@@ -53,10 +54,11 @@ export function createOpenAI(config: CreateOpenAIConfig): RunMeshOpenAI {
   }
 
   async function stream(request: ChatRequest): Promise<ResponseStream> {
-    const payload = {
+    const payload: ChatCompletionCreateParamsStreaming = {
+      ...(request as ChatCompletionCreateParamsStreaming),
       model: request.model ?? config.defaultModel,
-      stream: true,
-      ...request
+      messages: request.messages,
+      stream: true
     };
 
     try {

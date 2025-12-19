@@ -32,12 +32,12 @@ export class Tracer {
   addStep(step: Omit<TraceStep, "timestamp">) {
     const traceStep = { ...step, timestamp: Date.now() };
     this.steps.push(traceStep);
-    this.logger?.debug("trace_step", traceStep);
+    this.logger?.debug?.("trace_step", traceStep);
   }
 
   recordError(error: unknown) {
     this.errors.push(error);
-    this.logger?.error("trace_error", { error });
+    this.logger?.error?.("trace_error", { error });
   }
 
   finalize(metadata?: Partial<Trace>): Trace {
@@ -50,7 +50,7 @@ export class Tracer {
       durationMs,
       ...metadata
     };
-    this.logger?.info("trace_complete", trace);
+    this.logger?.info?.("trace_complete", trace);
     return trace;
   }
 }
